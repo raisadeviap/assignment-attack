@@ -66,7 +66,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         mahasiswaDeadImg = new ImageIcon(getClass().getResource("/img/mhs.png")).getImage();
         laptopImg = new ImageIcon(getClass().getResource("/img/laptop.png")).getImage();
         bukuImg = new ImageIcon(getClass().getResource("/img/buku.png")).getImage();
-        leadsImg = new ImageIcon(getClass().getResource("/img/buku.png")).getImage();
+        leadsImg = new ImageIcon(getClass().getResource("/img/laptop.png")).getImage();
 
 
         mahasiswa = new Block(mahasiswaX, mahasiswaY, mahasiswaWidth, mahasiswaHeight, mahasiswaRunImg);
