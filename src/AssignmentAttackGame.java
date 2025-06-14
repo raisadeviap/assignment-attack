@@ -13,9 +13,14 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     Image mahasiswaJumpImg;
     Image mahasiswaCrouchImg;
     Image mahasiswaDeadImg;
-    Image laptopImg;
-    Image bukuImg;
+    Image laptop1Img;
+    Image buku_pendekImg;
     Image leadsImg;
+    Image laptop_rusakImg;
+    Image buku_panjangImg;
+    Image jamImg;
+
+
 
     class Block {
         int x, y, width, height;
@@ -64,9 +69,12 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         mahasiswaJumpImg = new ImageIcon(getClass().getResource("/img/mhs.png")).getImage();
         mahasiswaCrouchImg = new ImageIcon(getClass().getResource("/img/mhs.png")).getImage();
         mahasiswaDeadImg = new ImageIcon(getClass().getResource("/img/mhs.png")).getImage();
-        laptopImg = new ImageIcon(getClass().getResource("/img/laptop.png")).getImage();
-        bukuImg = new ImageIcon(getClass().getResource("/img/buku.png")).getImage();
+        laptop1Img = new ImageIcon(getClass().getResource("/img/laptop.png")).getImage();
+        buku_pendekImg = new ImageIcon(getClass().getResource("/img/buku.png")).getImage();
         leadsImg = new ImageIcon(getClass().getResource("/img/buku.png")).getImage();
+        laptop_rusakImg = new ImageIcon(getClass().getResource("/img/laptop.png")).getImage();
+        buku_panjangImg = new ImageIcon(getClass().getResource("/img/buku.png")).getImage();
+        jamImg = new ImageIcon(getClass().getResource("/img/jam.png")).getImage();
 
 
         mahasiswa = new Block(mahasiswaX, mahasiswaY, mahasiswaWidth, mahasiswaHeight, mahasiswaRunImg);
@@ -81,13 +89,20 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     void placeRintangan() {
         if (gameOver) return;
         double chance = Math.random();
-        if (chance > 0.66) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, laptopImg));
-        } else if (chance > 0.33) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, bukuImg));
+        if (chance > 0.8333) {
+            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, laptop1Img)); // Rintangan 1
+        } else if (chance > 0.6666) {
+            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, buku_pendekImg)); // Rintangan 2
+        } else if (chance > 0.5) {
+            rintanganArray.add(new Block(750, rintanganAirY, 40, 40, leadsImg)); // Rintangan 3
+        } else if (chance > 0.3333) {
+            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, laptop_rusakImg)); // Rintangan 4
+        } else if (chance > 0.1666) {
+            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, buku_panjangImg)); // Rintangan 5
         } else {
-            rintanganArray.add(new Block(750, rintanganAirY, 40, 40, leadsImg));
+            rintanganArray.add(new Block(750, rintanganAirY, 40, 40, jamImg)); // Rintangan 6
         }
+
         if (rintanganArray.size() > 10) rintanganArray.remove(0);
     }
 
