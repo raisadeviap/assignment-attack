@@ -154,7 +154,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             if (!nameEntered) {
                 String playerName = JOptionPane.showInputDialog(null, "Game Over! \n Masukkan Nama Anda: ");
                 if (playerName != null && !playerName.trim().isEmpty()) {
-                    // Database.insertScore(playerName, score);
+                    // Database.insertScore(playerName, score); (Diaktifin menyesuaikan file database
                     System.out.println("Nama Pemain: " + playerName + ", Skor: " + score);
                 }
                 nameEntered = true;
