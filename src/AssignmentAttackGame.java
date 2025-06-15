@@ -48,6 +48,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
 
     boolean isCrouching = false;
     boolean gameOver = false;
+    boolean nameEntered = false;
     int score = 0;
 
     Timer gameLoop;
@@ -148,6 +149,16 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         if (gameOver) {
             placeRintanganTimer.stop();
             gameLoop.stop();
+
+            //Input Nama Pemain
+            if (!nameEntered) {
+                String playerName = JOptionPane.showInputDialog(null, "Game Over! \n Masukkan Nama Anda: ");
+                if (playerName != null && !playerName.trim().isEmpty()) {
+                    // Database.insertScore(playerName, score);
+                    System.out.println("Nama Pemain: " + playerName + ", Skor: " + score);
+                }
+                nameEntered = true;
+            }
         }
     }
 
@@ -170,6 +181,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             rintanganArray.clear();
             score = 0;
             gameOver = false;
+            nameEntered = false;
             gameLoop.start();
             placeRintanganTimer.start();
         }
