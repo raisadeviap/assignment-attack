@@ -13,8 +13,8 @@ public class DatabaseHandler {
              Statement stmt = conn.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS scores (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "nama TEXT NOT NULL," +
-                    "skor INTEGER NOT NULL," +
+                    "nama varchar (255)," +
+                    "skor int," +
                     "timestamp TEXT DEFAULT CURRENT_TIMESTAMP)";
             stmt.execute(sql);
         } catch (SQLException e) {
@@ -26,7 +26,7 @@ public class DatabaseHandler {
         String sql = "INSERT INTO scores(nama, skor) VALUES(?, ?)";
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, nama); // ✅ Pakai parameter method
+            pstmt.setString(1, nama);
             pstmt.setInt(2, skor);
 
             pstmt.executeUpdate();
@@ -43,7 +43,7 @@ public class DatabaseHandler {
             pstmt.setInt(1, limit);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                String entry = rs.getString("nama") + " - " + rs.getInt("skore") + " pts";
+                String entry = rs.getString("nama") + " - " + rs.getInt("skor") + " pts";
                 scores.add(entry);
             }
         } catch (SQLException e) {
