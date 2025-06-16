@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class AssignmentAttackGame extends JPanel implements ActionListener, KeyListener {
+    DatabaseHandler db = new DatabaseHandler();
+    boolean inputNamaSelesai = false;
     int boardWidth = 750;
     int boardHeight = 250;
 
@@ -148,6 +150,17 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         if (gameOver) {
             placeRintanganTimer.stop();
             gameLoop.stop();
+
+            if (!inputNamaSelesai) {
+                String name = JOptionPane.showInputDialog(null, "Masukkan nama Anda:");
+
+                if (name != null && !name.trim().isEmpty() && name.length() <= 20) {
+                    db.saveScore(name.trim(), score);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Nama tidak valid. Skor tidak disimpan.");
+                }
+                inputNamaSelesai = true;  // supaya input hanya sekali
+            }
         }
     }
 
@@ -171,6 +184,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             score = 0;
             gameOver = false;
             gameLoop.start();
+            inputNamaSelesai = false;
             placeRintanganTimer.start();
         }
     }

@@ -23,11 +23,11 @@ public class DatabaseHandler {
     }
 
     public void saveScore(String name, int score) {
-        String sql = "INSERT INTO scores(name, score) VALUES(?, ?)";
+        String sql = "INSERT INTO scores(nama, skor) VALUES(?, ?)";
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            pstmt.setInt(2, score);
+            pstmt.setString(1, nama);
+            pstmt.setInt(2, skor);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,13 +36,13 @@ public class DatabaseHandler {
 
     public List<String> getTopScores(int limit) {
         List<String> scores = new ArrayList<>();
-        String sql = "SELECT name, score, timestamp FROM scores ORDER BY score DESC LIMIT ?";
+        String sql = "SELECT nama, skor, timestamp FROM scores ORDER BY score DESC LIMIT ?";
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, limit);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                String entry = rs.getString("name") + " - " + rs.getInt("score") + " pts";
+                String entry = rs.getString("nama") + " - " + rs.getInt("skore") + " pts";
                 scores.add(entry);
             }
         } catch (SQLException e) {
