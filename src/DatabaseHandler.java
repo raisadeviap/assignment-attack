@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 public class DatabaseHandler {
-    private static final String DB_URL = "jdbc:sqlite:score.db";
+    private static final String DB_URL = "jdbc:sqlite:skor_pengguna.db";
 
     public DatabaseHandler() {
         createTableIfNeeded();
@@ -13,8 +13,8 @@ public class DatabaseHandler {
              Statement stmt = conn.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS scores (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "nama varchar (255)," +
-                    "skor int," +
+                    "nama VARCHAR(255)," +
+                    "skor INT," +
                     "timestamp TEXT DEFAULT CURRENT_TIMESTAMP)";
             stmt.execute(sql);
         } catch (SQLException e) {
@@ -28,7 +28,6 @@ public class DatabaseHandler {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, nama);
             pstmt.setInt(2, skor);
-
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,7 +36,7 @@ public class DatabaseHandler {
 
     public List<String> getTopScores(int limit) {
         List<String> scores = new ArrayList<>();
-        String sql = "SELECT nama, skor, timestamp FROM scores ORDER BY score DESC LIMIT ?";
+        String sql = "SELECT nama, skor, timestamp FROM scores ORDER BY skor DESC LIMIT ?";
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, limit);
