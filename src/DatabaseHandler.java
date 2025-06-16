@@ -22,7 +22,7 @@ public class DatabaseHandler {
         }
     }
 
-    public void saveScore(String name, int score) {
+    public void saveScore(String nama, int skor) {
         String sql = "INSERT INTO scores(nama, skor) VALUES(?, ?)";
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
