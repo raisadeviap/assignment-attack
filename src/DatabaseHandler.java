@@ -26,8 +26,9 @@ public class DatabaseHandler {
         String sql = "INSERT INTO scores(nama, skor) VALUES(?, ?)";
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, nama);
+            pstmt.setString(1, nama); // ✅ Pakai parameter method
             pstmt.setInt(2, skor);
+
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
