@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 public class DatabaseHandler {
-    private static final String DB_URL = "jdbc:sqlite:scores.db";
+    private static final String DB_URL = "jdbc:sqlite:skor.db";
 
     public DatabaseHandler() {
         createTableIfNeeded();
@@ -13,8 +13,8 @@ public class DatabaseHandler {
              Statement stmt = conn.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS scores (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "name TEXT NOT NULL," +
-                    "score INTEGER NOT NULL," +
+                    "nama TEXT NOT NULL," +
+                    "skor INTEGER NOT NULL," +
                     "timestamp TEXT DEFAULT CURRENT_TIMESTAMP)";
             stmt.execute(sql);
         } catch (SQLException e) {
