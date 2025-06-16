@@ -8,7 +8,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     DatabaseHandler db = new DatabaseHandler();
     boolean inputNamaSelesai = false;
     int boardWidth = 750;
-    int boardHeight = 250;nu
+    int boardHeight = 250;
 
     Image backgroundImg;
     Image mahasiswaRunImg;
