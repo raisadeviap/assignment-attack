@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 public class DatabaseHandler {
-    private static final String DB_URL = "jdbc:sqlite:skor.db";
+    private static final String DB_URL = "jdbc:sqlite:score.db";
 
     public DatabaseHandler() {
         createTableIfNeeded();
@@ -23,7 +23,7 @@ public class DatabaseHandler {
     }
 
     public void saveScore(String nama, int skor) {
-        String sql = "INSERT INTO skor(nama, skor) VALUES(?, ?)";
+        String sql = "INSERT INTO scores(nama, skor) VALUES(?, ?)";
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, nama);
