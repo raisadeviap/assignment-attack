@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 public class DatabaseHandler {
-    private static final String DB_URL = "jdbc:sqlite:skor_pengguna.db";
+    private static final String DB_URL = "jdbc:sqlite:D:/sqlite/skor_pengguna.db";
 
     public DatabaseHandler() {
         createTableIfNeeded();
