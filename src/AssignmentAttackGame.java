@@ -156,18 +156,40 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             gameLoop.stop();
 
             if (!skorSudahDisimpan) {
-                String inputNama = JOptionPane.showInputDialog(this,  "\nMasukkan Nama Anda:");
+                // ⬇⬇ Ganti bagian ini dengan custom input dialog yang sudah kita buat sebelumnya
+                JTextField nameField = new JTextField(15);
+                nameField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
-                if (inputNama != null && !inputNama.trim().isEmpty() && inputNama.length() <= 20) {
-                    db.saveScore(inputNama.trim(), score);
-                    skorSudahDisimpan = true;
+                JPanel panel = new JPanel(new BorderLayout(5, 5));
+                panel.add(new JLabel("Game Over! Skor: " + score), BorderLayout.NORTH);
+                panel.add(new JLabel("Masukkan Nama Anda:"), BorderLayout.CENTER);
+                panel.add(nameField, BorderLayout.SOUTH);
 
-                    SwingUtilities.invokeLater(() -> {
-                        LeaderboardUI leaderboard = new LeaderboardUI();
-                        leaderboard.setVisible(true);
-                    });
+                UIManager.put("OptionPane.okButtonText", "Simpan");
+                UIManager.put("OptionPane.cancelButtonText", "Batal");
+                UIManager.put("OptionPane.messageFont", new Font("Segoe UI", Font.BOLD, 14));
+                UIManager.put("Button.font", new Font("Segoe UI", Font.PLAIN, 13));
+
+                int result = JOptionPane.showConfirmDialog(
+                        this, panel, "Skor Game",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE
+                );
+
+                if (result == JOptionPane.OK_OPTION) {
+                    String inputNama = nameField.getText();
+                    if (inputNama != null && !inputNama.trim().isEmpty() && inputNama.length() <= 20) {
+                        db.saveScore(inputNama.trim(), score);
+                        skorSudahDisimpan = true;
+
+                        SwingUtilities.invokeLater(() -> {
+                            LeaderboardUI leaderboard = new LeaderboardUI();
+                            leaderboard.setVisible(true);
+                        });
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Nama tidak valid. Skor tidak disimpan.");
+                        skorSudahDisimpan = true;
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(this, "Nama tidak valid. Skor tidak disimpan.");
                     skorSudahDisimpan = true;
                 }
             }
