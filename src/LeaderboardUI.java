@@ -40,7 +40,7 @@ public class LeaderboardUI extends JFrame {
         String[] columnNames = {"🏅 Rank", "👤 Player", "🎯 Score"};
 
         // Ambil data leaderboard dari database
-        DatabaseHandler db = new DatabaseHandler();
+        DatabaseHandler db = DatabaseHandler.getInstance();
         List<String> topScores = db.getTopScores(10);
         Object[][] data = new Object[topScores.size()][3];
 
