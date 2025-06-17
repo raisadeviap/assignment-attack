@@ -51,9 +51,10 @@ public class LeaderboardUI extends JFrame {
                 case 2 -> "🥉";
                 default -> "🏅 " + (i + 1);
             };
-            data[i][0] = rankDisplay + " " + (i + 1);
-            data[i][1] = parts.length > 0 ? parts[0] : "Unknown"; // 🔧 Penanganan error
-            data[i][2] = parts.length > 1 ? parts[1].replace(" pts", "") : "0"; // 🔧 Penanganan error
+
+            data[i][0] = rankDisplay; // ✅ diperbaiki agar tidak double
+            data[i][1] = parts.length > 0 ? parts[0] : "Unknown";
+            data[i][2] = parts.length > 1 ? parts[1].replace(" pts", "") : "0";
         }
 
         JTable table = new JTable(data, columnNames) {
