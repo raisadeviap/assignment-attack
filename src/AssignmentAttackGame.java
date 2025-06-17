@@ -156,7 +156,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             gameLoop.stop();
 
             if (!skorSudahDisimpan) {
-                String inputNama = JOptionPane.showInputDialog(this, "Game Over! Skor: " + score + "\nMasukkan Nama Anda:");
+                String inputNama = JOptionPane.showInputDialog(this,  "\nMasukkan Nama Anda:");
 
                 if (inputNama != null && !inputNama.trim().isEmpty() && inputNama.length() <= 20) {
                     db.saveScore(inputNama.trim(), score);
