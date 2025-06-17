@@ -10,38 +10,6 @@ public class LeaderboardUI extends JFrame {
     private int cloudX1 = 100, cloudX2 = 300, cloudX3 = 500;
 
     public LeaderboardUI() {
-        public class LeaderboardUI extends JFrame {
-            public LeaderboardUI() {
-                setTitle("Leaderboard");
-                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                setSize(400, 400);
-                setLocationRelativeTo(null);
-                setLayout(new BorderLayout());
-
-                // Ini panel utama untuk tabel leaderboard
-                JTable table = ... // isi tabel leaderboard kamu
-                JScrollPane scrollPane = new JScrollPane(table);
-                add(scrollPane, BorderLayout.CENTER);
-
-                // ⬇⬇ Di sinilah kamu tambahkan tombol Main Lagi:
-                JButton mainButton = new JButton("🔄 Main Lagi");
-                mainButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
-                mainButton.setBackground(new Color(0, 120, 0));
-                mainButton.setForeground(Color.WHITE);
-
-                mainButton.addActionListener(e -> {
-                    dispose(); // Tutup leaderboard
-                    new GameMainUI(); // Mulai ulang game
-                });
-
-                JPanel buttonPanel = new JPanel();
-                buttonPanel.add(mainButton);
-                add(buttonPanel, BorderLayout.SOUTH); // Tambahkan ke bawah
-
-                setVisible(true);
-            }
-        }
-
         setTitle("Assignment Attack - Leaderboard");
         setSize(800, 650);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -182,9 +150,22 @@ public class LeaderboardUI extends JFrame {
         mainPanel.add(leaderboardTitle);
         mainPanel.add(gameTitle);
         mainPanel.add(scrollPane);
+        JButton mainButton = new JButton("🔄 Main Lagi");
+        mainButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        mainButton.setBackground(new Color(0, 120, 0));
+        mainButton.setForeground(Color.WHITE);
+        mainButton.setFocusPainted(false);
+        mainButton.setBounds(300, 500, 180, 50); // Sesuaikan posisi
+
+        mainButton.addActionListener(e -> {
+            dispose(); // Tutup leaderboard
+            new GameMainUI(); // Mulai ulang game
+        });
+
+        mainPanel.add(mainButton);
+
         setContentPane(mainPanel);
     }
-
 
     public static void main(String[] args) {
         try {
