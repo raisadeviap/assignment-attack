@@ -161,14 +161,9 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
                 nameField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
                 JPanel panel = new JPanel(new BorderLayout(5, 5));
-                panel.add(new JLabel("Game Over! Skor: " + score), BorderLayout.NORTH);
+                panel.add(new JLabel("Game Over!"), BorderLayout.NORTH);
                 panel.add(new JLabel("Masukkan Nama Anda:"), BorderLayout.CENTER);
                 panel.add(nameField, BorderLayout.SOUTH);
-
-                UIManager.put("OptionPane.okButtonText", "Simpan");
-                UIManager.put("OptionPane.cancelButtonText", "Batal");
-                UIManager.put("OptionPane.messageFont", new Font("Segoe UI", Font.BOLD, 14));
-                UIManager.put("Button.font", new Font("Segoe UI", Font.PLAIN, 13));
 
                 int result = JOptionPane.showConfirmDialog(
                         this, panel, "Skor Game",
