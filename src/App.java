@@ -12,6 +12,12 @@ public class App {
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
+        AssignmentAttackGame gamePanel = new AssignmentAttackGame();
+
+        String nama = JOptionPane.showInputDialog(frame, "Masukkan Nama Anda:");
+        gamePanel.setPlayerName(nama);
+
         AssignmentAttackGame gamePanel = new AssignmentAttackGame();
         frame.add(gamePanel);
         frame.pack();
