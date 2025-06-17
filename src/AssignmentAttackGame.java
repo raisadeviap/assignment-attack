@@ -231,6 +231,20 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     public void setPlayerName(String name) {
         this.name = name;
     }
+
+    public void resetGame() {
+        mahasiswa.y = mahasiswaY;
+        mahasiswa.img = mahasiswaRunImg;
+        velocityY = 0;
+        rintanganArray.clear();
+        score = 0;
+        gameOver = false;
+        skorSudahDisimpan = false;
+        inputNamaSelesai = false;
+        gameLoop.start();
+        placeRintanganTimer.start();
+    }
+
 }
 
 
