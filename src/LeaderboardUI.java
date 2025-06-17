@@ -46,13 +46,13 @@ public class LeaderboardUI extends JFrame {
 
         for (int i = 0; i < topScores.size(); i++) {
             String[] parts = topScores.get(i).split(" - ");
-            String rankEmoji = switch (i) {
+            String rankDisplay = switch (i) {
                 case 0 -> "🥇";
                 case 1 -> "🥈";
                 case 2 -> "🥉";
-                default -> String.valueOf(i + 1);
+                default -> "🏅 " + (i + 1);
             };
-            data[i][0] = rankEmoji + " " + (i + 1);
+            data[i][0] = rankDisplay + " " + (i + 1);
             data[i][1] = parts[0];
             data[i][2] = parts[1].replace(" pts", "");
         }
