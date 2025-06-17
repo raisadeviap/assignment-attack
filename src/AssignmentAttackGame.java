@@ -9,6 +9,9 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     boolean inputNamaSelesai = false;
     int boardWidth = 750;
     int boardHeight = 250;
+    private String name = "";
+
+    boolean skorSudahDisimpan = false;
 
     Image backgroundImg;
     Image mahasiswaRunImg;
@@ -113,6 +116,9 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         } else {
             g.drawString("Score: " + score, 10, 35);
         }
+
+        g.setFont(new Font("Courier", Font.PLAIN, 18));
+        g.drawString("Nama: " + name, 600, 35);
     }
 
     public void move() {
@@ -151,15 +157,17 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             placeRintanganTimer.stop();
             gameLoop.stop();
 
-            if (!inputNamaSelesai) {
-                String name = JOptionPane.showInputDialog(null, "Masukkan nama Anda:");
+            if (!skorSudahDisimpan && name != null && !name.trim().isEmpty() && name.length() <= 20) {
+                db.saveScore(name.trim(), score);
+                skorSudahDisimpan = true;
 
-                if (name != null && !name.trim().isEmpty() && name.length() <= 20) {
-                    db.saveScore(name.trim(), score);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Nama tidak valid. Skor tidak disimpan.");
-                }
-                inputNamaSelesai = true;  // supaya input hanya sekali
+                SwingUtilities.invokeLater(() -> {
+                    LeaderboardUI leaderboard = new LeaderboardUI();
+                    leaderboard.setVisible(true);
+                });
+            } else if (!skorSudahDisimpan) {
+                JOptionPane.showMessageDialog(null, "Nama tidak valid. Skor tidak disimpan.");
+                skorSudahDisimpan = true;
             }
         }
     }
@@ -183,6 +191,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             rintanganArray.clear();
             score = 0;
             gameOver = false;
+            skorSudahDisimpan = false;
             gameLoop.start();
             inputNamaSelesai = false;
             placeRintanganTimer.start();
