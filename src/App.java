@@ -12,7 +12,6 @@ public class App {
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
         AssignmentAttackGame gamePanel = new AssignmentAttackGame();
 
         frame.add(gamePanel);

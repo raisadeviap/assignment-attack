@@ -116,10 +116,8 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         } else {
             g.drawString("Score: " + score, 10, 35);
         }
-
-        g.setFont(new Font("Courier", Font.PLAIN, 18));
-        g.drawString("Nama: " + name, 600, 35);
     }
+
 
     public void move() {
         velocityY += gravity;
@@ -157,19 +155,22 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             placeRintanganTimer.stop();
             gameLoop.stop();
 
-            if (!skorSudahDisimpan && name != null && !name.trim().isEmpty() && name.length() <= 20) {
-                db.saveScore(name.trim(), score);
-                skorSudahDisimpan = true;
+            if (!skorSudahDisimpan) {
+                String inputNama = JOptionPane.showInputDialog(this, "Game Over! Skor: " + score + "\nMasukkan Nama Anda:");
 
-                SwingUtilities.invokeLater(() -> {
-                    LeaderboardUI leaderboard = new LeaderboardUI();
-                    leaderboard.setVisible(true);
-                });
-            } else if (!skorSudahDisimpan)  {
-                JOptionPane.showMessageDialog(null, "Nama tidak valid. Skor tidak disimpan.");
-                skorSudahDisimpan = true;
+                if (inputNama != null && !inputNama.trim().isEmpty() && inputNama.length() <= 20) {
+                    db.saveScore(inputNama.trim(), score);
+                    skorSudahDisimpan = true;
+
+                    SwingUtilities.invokeLater(() -> {
+                        LeaderboardUI leaderboard = new LeaderboardUI();
+                        leaderboard.setVisible(true);
+                    });
+                } else {
+                    JOptionPane.showMessageDialog(this, "Nama tidak valid. Skor tidak disimpan.");
+                    skorSudahDisimpan = true;
+                }
             }
-
         }
     }
 
