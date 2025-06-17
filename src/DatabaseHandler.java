@@ -3,9 +3,17 @@ import java.util.*;
 
 public class DatabaseHandler {
     private static final String DB_URL = "jdbc:sqlite:D:/sqllite/skor_pengguna.db?busy_timeout=5000";
+    private static DatabaseHandler instance;
 
-    public DatabaseHandler() {
+    private DatabaseHandler() {
         createTableIfNeeded();
+    }
+
+    public static synchronized DatabaseHandler getInstance() {
+        if (instance == null) {
+            instance = new DatabaseHandler();
+        }
+        return instance;
     }
 
     private void createTableIfNeeded() {
@@ -30,6 +38,7 @@ public class DatabaseHandler {
             pstmt.setInt(2, skor);
             pstmt.executeUpdate();
         } catch (SQLException e) {
+            System.err.println("❌ Gagal menyimpan skor:");
             e.printStackTrace();
         }
     }
@@ -47,6 +56,7 @@ public class DatabaseHandler {
                 }
             }
         } catch (SQLException e) {
+            System.err.println("❌ Gagal mengambil skor:");
             e.printStackTrace();
         }
         return scores;

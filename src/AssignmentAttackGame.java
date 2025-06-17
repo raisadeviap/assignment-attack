@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class AssignmentAttackGame extends JPanel implements ActionListener, KeyListener {
-    DatabaseHandler db = new DatabaseHandler();
+    DatabaseHandler db = DatabaseHandler.getInstance();
     boolean inputNamaSelesai = false;
     int boardWidth = 750;
     int boardHeight = 250;
