@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 public class DatabaseHandler {
-    private static final String DB_URL = "jdbc:sqlite:D:/sqllite/skor_pengguna.db";
+    private static final String DB_URL = "jdbc:sqlite:D:/sqllite/skor_pengguna.db?busy_timeout=5000";
 
     public DatabaseHandler() {
         createTableIfNeeded();
@@ -40,10 +40,11 @@ public class DatabaseHandler {
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, limit);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                String entry = rs.getString("nama") + " - " + rs.getInt("skor") + " pts";
-                scores.add(entry);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String entry = rs.getString("nama") + " - " + rs.getInt("skor") + " pts";
+                    scores.add(entry);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
