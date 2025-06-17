@@ -87,9 +87,9 @@ public class LeaderboardUI extends JFrame {
         for (int i = 0; i < topScores.size(); i++) {
             String[] parts = topScores.get(i).split(" - ");
             String rankDisplay = switch (i) {
-                case 0 -> "🥇";
-                case 1 -> "🥈";
-                case 2 -> "🥉";
+                case 0 -> "🥇 1";
+                case 1 -> "🥈 2";
+                case 2 -> "🥉 3";
                 default -> "🏅 " + (i + 1);
             };
 
