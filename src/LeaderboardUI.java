@@ -2,40 +2,81 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class LeaderboardUI extends JFrame {
+    private int cloudX1 = 100, cloudX2 = 300, cloudX3 = 500;
 
     public LeaderboardUI() {
         setTitle("Assignment Attack - Leaderboard");
-        setSize(600, 700);
+        setSize(800, 650);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel mainPanel = new JPanel(new BorderLayout()) {
+        JPanel mainPanel = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
-                g2d.setPaint(new GradientPaint(0, 0, new Color(180, 255, 180), 0, getHeight(), new Color(60, 150, 60)));
-                g2d.fillRect(0, 0, getWidth(), getHeight());
+                int width = getWidth();
+                int height = getHeight();
+
+                // Background langit
+                g2d.setColor(new Color(103, 215, 244));
+                g2d.fillRect(0, 0, width, height);
+
+                // Awan
+                g2d.setColor(Color.WHITE);
+                drawCloud(g2d, cloudX1, 60);
+                drawCloud(g2d, cloudX2, 40);
+                drawCloud(g2d, cloudX3, 70);
+
+                // Rumput
+                for (int i = 0; i < width; i += 8) {
+                    g2d.setColor(new Color(0, (int)(190 + Math.random() * 40), 0));
+                    int blade = 22 + (int)(Math.random() * 10);
+                    g2d.fillOval(i, height - 110 - blade, 8, blade);
+                }
+
+                // Tanah
+                g2d.setColor(new Color(102, 51, 0));
+                g2d.fillRect(0, height - 110, width, 110);
+            }
+
+            private void drawCloud(Graphics2D g2d, int x, int y) {
+                g2d.fillOval(x, y, 60, 40);
+                g2d.fillOval(x + 30, y - 20, 50, 50);
+                g2d.fillOval(x + 50, y + 10, 60, 40);
             }
         };
+
+        Timer timer = new Timer(50, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cloudX1 = (cloudX1 + 1) % 900;
+                cloudX2 = (cloudX2 + 1) % 900;
+                cloudX3 = (cloudX3 + 1) % 900;
+                mainPanel.repaint();
+            }
+        });
+        timer.start();
+
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         Font gameFont = new Font("Press Start 2P", Font.PLAIN, 14);
         Font gameFontBig = new Font("Press Start 2P", Font.BOLD, 20);
         Font gameFontHuge = new Font("Press Start 2P", Font.BOLD, 28);
 
-        JLabel leaderboardTitle = new JLabel("\uD83C\uDFC6 LEADERBOARD SCORE \uD83C\uDFC6", SwingConstants.CENTER);
+        JLabel leaderboardTitle = new JLabel("🏆 LEADERBOARD SCORE 🏆", SwingConstants.CENTER);
         leaderboardTitle.setFont(gameFontHuge);
         leaderboardTitle.setForeground(new Color(0, 70, 0));
-        leaderboardTitle.setBorder(new EmptyBorder(10, 0, 20, 0));
+        leaderboardTitle.setBounds(30, 20, 740, 50);
 
-        JLabel gameTitle = new JLabel("\uD83C\uDFAE Assignment Attack \uD83C\uDFAE", SwingConstants.CENTER);
+        JLabel gameTitle = new JLabel("🎮 Assignment Attack 🎮", SwingConstants.CENTER);
         gameTitle.setFont(gameFontBig);
         gameTitle.setForeground(new Color(0, 90, 40));
-        gameTitle.setBorder(new EmptyBorder(10, 0, 20, 0));
+        gameTitle.setBounds(30, 70, 740, 40);
 
         String[] columnNames = {"🏅 Rank", "👤 Player", "🎯 Score"};
 
@@ -52,7 +93,7 @@ public class LeaderboardUI extends JFrame {
                 default -> "🏅 " + (i + 1);
             };
 
-            data[i][0] = rankDisplay; // ✅ diperbaiki agar tidak double
+            data[i][0] = rankDisplay;
             data[i][1] = parts.length > 0 ? parts[0] : "Unknown";
             data[i][2] = parts.length > 1 ? parts[1].replace(" pts", "") : "0";
         }
@@ -62,7 +103,6 @@ public class LeaderboardUI extends JFrame {
                 return false;
             }
         };
-
         table.setFont(gameFont);
         table.setRowHeight(60);
         table.setShowGrid(false);
@@ -103,14 +143,13 @@ public class LeaderboardUI extends JFrame {
         header.setPreferredSize(new Dimension(100, 45));
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(100, 130, 600, 350);
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(0, 120, 0), 4));
         scrollPane.getViewport().setBackground(new Color(220, 255, 220));
-        scrollPane.setPreferredSize(new Dimension(520, 350));
 
-        mainPanel.add(leaderboardTitle, BorderLayout.NORTH);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-        mainPanel.add(gameTitle, BorderLayout.SOUTH);
-
+        mainPanel.add(leaderboardTitle);
+        mainPanel.add(gameTitle);
+        mainPanel.add(scrollPane);
         setContentPane(mainPanel);
     }
 
@@ -119,9 +158,6 @@ public class LeaderboardUI extends JFrame {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}
 
-        SwingUtilities.invokeLater(() -> {
-            LeaderboardUI frame = new LeaderboardUI();
-            frame.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new LeaderboardUI().setVisible(true));
     }
 }
