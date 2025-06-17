@@ -150,6 +150,7 @@ public class LeaderboardUI extends JFrame {
         mainPanel.add(leaderboardTitle);
         mainPanel.add(gameTitle);
         mainPanel.add(scrollPane);
+
         JButton mainButton = new JButton("🔄 Main Lagi");
         mainButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
         mainButton.setBackground(new Color(0, 120, 0));
