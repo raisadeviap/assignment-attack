@@ -3,6 +3,11 @@ import javax.swing.*;
 
 public class App {
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         int boardWidth = 750;
         int boardHeight = 250;
 

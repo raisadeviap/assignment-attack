@@ -87,9 +87,9 @@ public class LeaderboardUI extends JFrame {
         for (int i = 0; i < topScores.size(); i++) {
             String[] parts = topScores.get(i).split(" - ");
             String rankDisplay = switch (i) {
-                case 0 -> "🥇 1";
-                case 1 -> "🥈 2";
-                case 2 -> "🥉 3";
+                case 0 -> "🥇";
+                case 1 -> "🥈";
+                case 2 -> "🥉";
                 default -> "🏅 " + (i + 1);
             };
 
@@ -105,7 +105,8 @@ public class LeaderboardUI extends JFrame {
         };
         table.setFont(gameFont);
         table.setRowHeight(60);
-        table.setShowGrid(false);
+        table.setShowGrid(true);
+        table.setGridColor(new Color(0, 100, 0)); // Hijau gelap atau sesuaikan warnanya
         table.setIntercellSpacing(new Dimension(0, 0));
         table.setBackground(new Color(255, 255, 240));
 
@@ -136,12 +137,16 @@ public class LeaderboardUI extends JFrame {
         });
 
         JTableHeader header = table.getTableHeader();
-        header.setFont(gameFont);
-        header.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        header.setBackground(new Color(0, 100, 50));
-        header.setForeground(Color.BLACK);
-        header.setReorderingAllowed(false);
-        header.setPreferredSize(new Dimension(100, 45));
+        header.setFont(new Font("Segoe UI Emoji", Font.BOLD, 16)); // Font dengan emoji dan ukuran 16 bold
+        header.setBackground(new Color(0, 100, 0));                // Hijau tua
+        header.setForeground(Color.BLACK);                         // Teks putih agar kontras
+        header.setOpaque(true);                                    // Pastikan background diterapkan
+        header.setReorderingAllowed(false);                        // Tidak bisa di-drag
+        header.setPreferredSize(new Dimension(100, 45));           // Tinggi header 45 piksel
+
+
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(100, 130, 600, 350);
@@ -153,11 +158,21 @@ public class LeaderboardUI extends JFrame {
         mainPanel.add(scrollPane);
 
         JButton mainButton = new JButton("MAIN LAGI");
-        mainButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        mainButton.setBackground(new Color(0, 120, 0));
+        mainButton.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        mainButton.setBackground(new Color(34, 139, 34));
         mainButton.setForeground(Color.BLACK);
         mainButton.setFocusPainted(false);
-        mainButton.setBounds(300, 500, 120, 30);
+
+        int frameWidth = 800;
+        int buttonWidth = 140;
+        int buttonHeight = 30;
+
+        int xCenter = (frameWidth - buttonWidth) / 2;
+        int yBottomTanah = 650 - 140;
+        int yCenterTanah = yBottomTanah + (110 - buttonHeight) / 2;
+
+        mainButton.setBounds(xCenter, yCenterTanah, buttonWidth, buttonHeight);
+
 
         mainButton.addActionListener(e -> {
             dispose(); // Tutup leaderboard
