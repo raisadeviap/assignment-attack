@@ -19,6 +19,7 @@ public class DatabaseHandler {
     private void createTableIfNeeded() {
         try (Connection conn = DriverManager.getConnection(DB_URL);
              Statement stmt = conn.createStatement()) {
+            stmt.execute("PRAGMA journal_mode=WAL");
             String sql = "CREATE TABLE IF NOT EXISTS scores (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "nama VARCHAR(255)," +
@@ -30,7 +31,7 @@ public class DatabaseHandler {
         }
     }
 
-    public void saveScore(String nama, int skor) {
+    public synchronized void saveScore(String nama, int skor) {
         String sql = "INSERT INTO scores(nama, skor) VALUES(?, ?)";
         try (Connection conn = DriverManager.getConnection(DB_URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -43,7 +44,7 @@ public class DatabaseHandler {
         }
     }
 
-    public List<String> getTopScores(int limit) {
+    public synchronized List<String> getTopScores(int limit) {
         List<String> scores = new ArrayList<>();
         String sql = "SELECT nama, skor, timestamp FROM scores ORDER BY skor DESC LIMIT ?";
         try (Connection conn = DriverManager.getConnection(DB_URL);

@@ -39,7 +39,6 @@ public class LeaderboardUI extends JFrame {
 
         String[] columnNames = {"🏅 Rank", "👤 Player", "🎯 Score"};
 
-        // Ambil data leaderboard dari database
         DatabaseHandler db = DatabaseHandler.getInstance();
         List<String> topScores = db.getTopScores(10);
         Object[][] data = new Object[topScores.size()][3];
@@ -53,8 +52,8 @@ public class LeaderboardUI extends JFrame {
                 default -> "🏅 " + (i + 1);
             };
             data[i][0] = rankDisplay + " " + (i + 1);
-            data[i][1] = parts[0];
-            data[i][2] = parts[1].replace(" pts", "");
+            data[i][1] = parts.length > 0 ? parts[0] : "Unknown"; // 🔧 Penanganan error
+            data[i][2] = parts.length > 1 ? parts[1].replace(" pts", "") : "0"; // 🔧 Penanganan error
         }
 
         JTable table = new JTable(data, columnNames) {
