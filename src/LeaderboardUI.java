@@ -137,6 +137,7 @@ public class LeaderboardUI extends JFrame {
 
         JTableHeader header = table.getTableHeader();
         header.setFont(gameFont);
+        header.setFont(new Font("Segoe UI", Font.BOLD, 16));
         header.setBackground(new Color(0, 100, 50));
         header.setForeground(Color.BLACK);
         header.setReorderingAllowed(false);
@@ -151,12 +152,12 @@ public class LeaderboardUI extends JFrame {
         mainPanel.add(gameTitle);
         mainPanel.add(scrollPane);
 
-        JButton mainButton = new JButton("Main Lagi");
-        mainButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        JButton mainButton = new JButton("MAIN LAGI");
+        mainButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
         mainButton.setBackground(new Color(0, 120, 0));
         mainButton.setForeground(Color.BLACK);
         mainButton.setFocusPainted(false);
-        mainButton.setBounds(300, 500, 180, 50); // Sesuaikan posisi
+        mainButton.setBounds(300, 500, 120, 30);
 
         mainButton.addActionListener(e -> {
             dispose(); // Tutup leaderboard
