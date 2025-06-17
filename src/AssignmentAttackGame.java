@@ -9,6 +9,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     boolean inputNamaSelesai = false;
     int boardWidth = 750;
     int boardHeight = 250;
+    private String name = "";
 
     Image backgroundImg;
     Image mahasiswaRunImg;
@@ -151,6 +152,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             placeRintanganTimer.stop();
             gameLoop.stop();
 
+
             if (name != null && !name.trim().isEmpty() && name.length() <= 20) {
                 db.saveScore(name.trim(), score);
                 // Tampilkan leaderboard setelah menyimpan skor
@@ -200,4 +202,10 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
 
     @Override
     public void keyTyped(KeyEvent e) {}
+
+    public void setPlayerName(String name) {
+        this.name = name;
+    }
 }
+
+
