@@ -15,9 +15,6 @@ public class App {
 
         AssignmentAttackGame gamePanel = new AssignmentAttackGame();
 
-        String nama = JOptionPane.showInputDialog(frame, "Masukkan Nama Anda:");
-        gamePanel.setPlayerName(nama);
-
         frame.add(gamePanel);
         frame.pack();
         gamePanel.requestFocus();
