@@ -151,16 +151,17 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             placeRintanganTimer.stop();
             gameLoop.stop();
 
-            if (!inputNamaSelesai) {
-                String name = JOptionPane.showInputDialog(null, "Masukkan nama Anda:");
-
-                if (name != null && !name.trim().isEmpty() && name.length() <= 20) {
-                    db.saveScore(name.trim(), score);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Nama tidak valid. Skor tidak disimpan.");
-                }
-                inputNamaSelesai = true;  // supaya input hanya sekali
+            if (name != null && !name.trim().isEmpty() && name.length() <= 20) {
+                db.saveScore(name.trim(), score);
+                // Tampilkan leaderboard setelah menyimpan skor
+                SwingUtilities.invokeLater(() -> {
+                    LeaderboardUI leaderboard = new LeaderboardUI();
+                    leaderboard.setVisible(true);
+                });
+            } else {
+                JOptionPane.showMessageDialog(null, "Nama tidak valid. Skor tidak disimpan.");
             }
+
         }
     }
 
