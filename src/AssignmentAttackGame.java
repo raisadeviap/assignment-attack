@@ -5,8 +5,13 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class AssignmentAttackGame extends JPanel implements ActionListener, KeyListener {
+    DatabaseHandler db = DatabaseHandler.getInstance();
+    boolean inputNamaSelesai = false;
     int boardWidth = 750;
     int boardHeight = 250;
+    private String name = "";
+
+    boolean skorSudahDisimpan = false;
 
     Image backgroundImg;
     Image mahasiswaRunImg;
@@ -77,6 +82,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         jamImg = new ImageIcon(getClass().getResource("/img/jam.png")).getImage();
 
 
+
         mahasiswa = new Block(mahasiswaX, mahasiswaY, mahasiswaWidth, mahasiswaHeight, mahasiswaRunImg);
 
         gameLoop = new Timer(1000 / 60, this);
@@ -128,6 +134,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         }
     }
 
+
     public void move() {
         velocityY += gravity;
         mahasiswa.y += velocityY;
@@ -163,6 +170,40 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         if (gameOver) {
             placeRintanganTimer.stop();
             gameLoop.stop();
+
+            if (!skorSudahDisimpan) {
+                // ⬇⬇ Ganti bagian ini dengan custom input dialog yang sudah kita buat sebelumnya
+                JTextField nameField = new JTextField(15);
+                nameField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+
+                JPanel panel = new JPanel(new BorderLayout(5, 5));
+                panel.add(new JLabel("Game Over!"), BorderLayout.NORTH);
+                panel.add(new JLabel("Masukkan Nama Anda:"), BorderLayout.CENTER);
+                panel.add(nameField, BorderLayout.SOUTH);
+
+                int result = JOptionPane.showConfirmDialog(
+                        this, panel, "Skor Game",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE
+                );
+
+                if (result == JOptionPane.OK_OPTION) {
+                    String inputNama = nameField.getText();
+                    if (inputNama != null && !inputNama.trim().isEmpty() && inputNama.length() <= 20) {
+                        db.saveScore(inputNama.trim(), score);
+                        skorSudahDisimpan = true;
+
+                        SwingUtilities.invokeLater(() -> {
+                            LeaderboardUI leaderboard = new LeaderboardUI();
+                            leaderboard.setVisible(true);
+                        });
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Nama tidak valid. Skor tidak disimpan.");
+                        skorSudahDisimpan = true;
+                    }
+                } else {
+                    skorSudahDisimpan = true;
+                }
+            }
         }
     }
 
@@ -185,7 +226,9 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             rintanganArray.clear();
             score = 0;
             gameOver = false;
+            skorSudahDisimpan = false;
             gameLoop.start();
+            inputNamaSelesai = false;
             placeRintanganTimer.start();
         }
     }
@@ -200,4 +243,24 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
 
     @Override
     public void keyTyped(KeyEvent e) {}
+
+    public void setPlayerName(String name) {
+        this.name = name;
+    }
+
+    public void resetGame() {
+        mahasiswa.y = mahasiswaY;
+        mahasiswa.img = mahasiswaRunImg;
+        velocityY = 0;
+        rintanganArray.clear();
+        score = 0;
+        gameOver = false;
+        skorSudahDisimpan = false;
+        inputNamaSelesai = false;
+        gameLoop.start();
+        placeRintanganTimer.start();
+    }
+
 }
+
+
