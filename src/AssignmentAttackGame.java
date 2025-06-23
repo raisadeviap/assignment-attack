@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.sound.sampled.*;
+import java.io.*;
 
 public class AssignmentAttackGame extends JPanel implements ActionListener, KeyListener {
     DatabaseHandler db = DatabaseHandler.getInstance();
@@ -25,7 +27,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     Image buku_panjangImg;
     Image jamImg;
 
-
+    Clip backgroundMusic;
 
     class Block {
         int x, y, width, height;
@@ -41,14 +43,15 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     }
 
     int mahasiswaWidth = 88;
-    int mahasiswaHeight = 94;
+    int mahasiswaOriginalHeight = 94;
+    int mahasiswaCrouchHeight = mahasiswaOriginalHeight * 2 / 3;
     int mahasiswaX = 50;
     int mahasiswaY = 135;
 
     Block mahasiswa;
 
     int rintanganGroundY = boardHeight - 70;
-    int rintanganAirY = boardHeight - mahasiswaHeight - 100;
+    int rintanganAirY = boardHeight - mahasiswaOriginalHeight - 50;
 
     ArrayList<Block> rintanganArray = new ArrayList<>();
 
@@ -71,42 +74,42 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
 
         backgroundImg = new ImageIcon(getClass().getResource("/img/background.png")).getImage();
         mahasiswaRunImg = new ImageIcon(getClass().getResource("/img/mhs-run.gif")).getImage();
-        mahasiswaJumpImg = new ImageIcon(getClass().getResource("/img/mhs.png")).getImage();
-        mahasiswaCrouchImg = new ImageIcon(getClass().getResource("/img/mhs.png")).getImage();
-        mahasiswaDeadImg = new ImageIcon(getClass().getResource("/img/mhs.png")).getImage();
-        laptop1Img = new ImageIcon(getClass().getResource("/img/laptop.png")).getImage();
-        buku_pendekImg = new ImageIcon(getClass().getResource("/img/buku.png")).getImage();
-        leadsImg = new ImageIcon(getClass().getResource("/img/buku.png")).getImage();
-        laptop_rusakImg = new ImageIcon(getClass().getResource("/img/laptop.png")).getImage();
-        buku_panjangImg = new ImageIcon(getClass().getResource("/img/buku.png")).getImage();
+        mahasiswaJumpImg = new ImageIcon(getClass().getResource("/img/mhs-jump.png")).getImage();
+        mahasiswaCrouchImg = new ImageIcon(getClass().getResource("/img/mhs-crouch.png")).getImage();
+        mahasiswaDeadImg = new ImageIcon(getClass().getResource("/img/mhs-over.png")).getImage();
+        laptop1Img = new ImageIcon(getClass().getResource("/img/laptop1.png")).getImage();
+        buku_pendekImg = new ImageIcon(getClass().getResource("/img/buku_pendek.png")).getImage();
+        leadsImg = new ImageIcon(getClass().getResource("/img/leads.gif")).getImage();
+        laptop_rusakImg = new ImageIcon(getClass().getResource("/img/laptop_rusak.png")).getImage();
+        buku_panjangImg = new ImageIcon(getClass().getResource("/img/buku_panjang.png")).getImage();
         jamImg = new ImageIcon(getClass().getResource("/img/jam.png")).getImage();
 
-
-
-        mahasiswa = new Block(mahasiswaX, mahasiswaY, mahasiswaWidth, mahasiswaHeight, mahasiswaRunImg);
+        mahasiswa = new Block(mahasiswaX, mahasiswaY, mahasiswaWidth, mahasiswaOriginalHeight, mahasiswaRunImg);
 
         gameLoop = new Timer(1000 / 60, this);
         gameLoop.start();
 
         placeRintanganTimer = new Timer(1500, e -> placeRintangan());
         placeRintanganTimer.start();
+
+        playBackgroundMusic("/audio/RobotCity.wav");
     }
 
     void placeRintangan() {
         if (gameOver) return;
         double chance = Math.random();
         if (chance > 0.8333) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, laptop1Img)); // Rintangan 1
+            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, laptop1Img));
         } else if (chance > 0.6666) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, buku_pendekImg)); // Rintangan 2
+            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, buku_pendekImg));
         } else if (chance > 0.5) {
-            rintanganArray.add(new Block(750, rintanganAirY, 40, 40, leadsImg)); // Rintangan 3
+            rintanganArray.add(new Block(750, rintanganAirY, 50, 50, leadsImg));
         } else if (chance > 0.3333) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, laptop_rusakImg)); // Rintangan 4
+            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, laptop_rusakImg));
         } else if (chance > 0.1666) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 40, 40, buku_panjangImg)); // Rintangan 5
+            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, buku_panjangImg));
         } else {
-            rintanganArray.add(new Block(750, rintanganAirY, 40, 40, jamImg)); // Rintangan 6
+            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, jamImg));
         }
 
         if (rintanganArray.size() > 10) rintanganArray.remove(0);
@@ -126,7 +129,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         }
 
         g.setColor(Color.black);
-        g.setFont(new Font("Courier", Font.PLAIN, 24));
+        g.setFont(new Font("DialogInput", Font.BOLD, 16));
         if (gameOver) {
             g.drawString("Game Over: " + score, 10, 35);
         } else {
@@ -134,19 +137,26 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         }
     }
 
+    public void playBackgroundMusic(String path) {
+        try {
+            AudioInputStream audioInput = AudioSystem.getAudioInputStream(getClass().getResource(path));
+            backgroundMusic = AudioSystem.getClip();
+            backgroundMusic.open(audioInput);
+            backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void move() {
         velocityY += gravity;
         mahasiswa.y += velocityY;
 
-        if (mahasiswa.y > mahasiswaY) {
-            mahasiswa.y = mahasiswaY;
+        int groundY = mahasiswaY + (isCrouching ? (mahasiswaOriginalHeight - mahasiswaCrouchHeight) : 0);
+        if (mahasiswa.y > groundY) {
+            mahasiswa.y = groundY;
             velocityY = 0;
-            if (isCrouching) {
-                mahasiswa.img = mahasiswaCrouchImg;
-            } else {
-                mahasiswa.img = mahasiswaRunImg;
-            }
+            mahasiswa.img = isCrouching ? mahasiswaCrouchImg : mahasiswaRunImg;
         }
 
         for (Block r : rintanganArray) {
@@ -154,6 +164,9 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             if (collision(mahasiswa, r)) {
                 gameOver = true;
                 mahasiswa.img = mahasiswaDeadImg;
+                if (backgroundMusic != null && backgroundMusic.isRunning()) {
+                    backgroundMusic.stop();
+                }
             }
         }
         score++;
@@ -172,7 +185,6 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             gameLoop.stop();
 
             if (!skorSudahDisimpan) {
-                // ⬇⬇ Ganti bagian ini dengan custom input dialog yang sudah kita buat sebelumnya
                 JTextField nameField = new JTextField(15);
                 nameField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
@@ -181,21 +193,14 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
                 panel.add(new JLabel("Masukkan Nama Anda:"), BorderLayout.CENTER);
                 panel.add(nameField, BorderLayout.SOUTH);
 
-                int result = JOptionPane.showConfirmDialog(
-                        this, panel, "Skor Game",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE
-                );
+                int result = JOptionPane.showConfirmDialog(this, panel, "Skor Game", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
                 if (result == JOptionPane.OK_OPTION) {
                     String inputNama = nameField.getText();
                     if (inputNama != null && !inputNama.trim().isEmpty() && inputNama.length() <= 20) {
                         db.saveScore(inputNama.trim(), score);
                         skorSudahDisimpan = true;
-
-                        SwingUtilities.invokeLater(() -> {
-                            LeaderboardUI leaderboard = new LeaderboardUI();
-                            leaderboard.setVisible(true);
-                        });
+                        SwingUtilities.invokeLater(() -> new LeaderboardUI().setVisible(true));
                     } else {
                         JOptionPane.showMessageDialog(this, "Nama tidak valid. Skor tidak disimpan.");
                         skorSudahDisimpan = true;
@@ -209,40 +214,52 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE && mahasiswa.y == mahasiswaY) {
+        if ((e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP) && mahasiswa.y == mahasiswaY) {
             velocityY = -17;
             mahasiswa.img = mahasiswaJumpImg;
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_DOWN && mahasiswa.y == mahasiswaY) {
+        if (e.getKeyCode() == KeyEvent.VK_DOWN && mahasiswa.y == mahasiswaY && !isCrouching) {
             isCrouching = true;
             mahasiswa.img = mahasiswaCrouchImg;
+            int diff = mahasiswaOriginalHeight - mahasiswaCrouchHeight;
+            mahasiswa.y += diff;
+            mahasiswa.height = mahasiswaCrouchHeight;
         }
 
-        if (gameOver && e.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (gameOver && (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP)) {
             mahasiswa.y = mahasiswaY;
             mahasiswa.img = mahasiswaRunImg;
+            mahasiswa.height = mahasiswaOriginalHeight;
             velocityY = 0;
             rintanganArray.clear();
             score = 0;
             gameOver = false;
             skorSudahDisimpan = false;
-            gameLoop.start();
             inputNamaSelesai = false;
+            gameLoop.start();
             placeRintanganTimer.start();
+
+            if (backgroundMusic != null) {
+                backgroundMusic.setFramePosition(0);
+                backgroundMusic.start();
+                backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_DOWN && mahasiswa.y == mahasiswaY) {
+        if (e.getKeyCode() == KeyEvent.VK_DOWN && isCrouching) {
             isCrouching = false;
             mahasiswa.img = mahasiswaRunImg;
+            int diff = mahasiswaOriginalHeight - mahasiswaCrouchHeight;
+            mahasiswa.y -= diff;
+            mahasiswa.height = mahasiswaOriginalHeight;
         }
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {}
+    @Override public void keyTyped(KeyEvent e) {}
 
     public void setPlayerName(String name) {
         this.name = name;
@@ -251,6 +268,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     public void resetGame() {
         mahasiswa.y = mahasiswaY;
         mahasiswa.img = mahasiswaRunImg;
+        mahasiswa.height = mahasiswaOriginalHeight;
         velocityY = 0;
         rintanganArray.clear();
         score = 0;
@@ -259,8 +277,11 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         inputNamaSelesai = false;
         gameLoop.start();
         placeRintanganTimer.start();
+
+        if (backgroundMusic != null) {
+            backgroundMusic.setFramePosition(0);
+            backgroundMusic.start();
+            backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+        }
     }
-
 }
-
-
