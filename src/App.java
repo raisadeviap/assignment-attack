@@ -1,7 +1,13 @@
+// App.java
 import javax.swing.*;
 
 public class App {
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         int boardWidth = 750;
         int boardHeight = 250;
 
@@ -12,6 +18,7 @@ public class App {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         AssignmentAttackGame gamePanel = new AssignmentAttackGame();
+
         frame.add(gamePanel);
         frame.pack();
         gamePanel.requestFocus();
