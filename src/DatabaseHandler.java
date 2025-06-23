@@ -1,11 +1,15 @@
+import java.io.File;
 import java.sql.*;
 import java.util.*;
 
 public class DatabaseHandler {
-    private static final String DB_URL = "jdbc:sqlite:D:/sqllite/skor_pengguna.db?busy_timeout=5000";
+    private static final String DB_FOLDER = "C:/sqllite";
+    private static final String DB_PATH = DB_FOLDER + "/skor_pengguna.db";
+    private static final String DB_URL = "jdbc:sqlite:" + DB_PATH;
     private static DatabaseHandler instance;
 
     private DatabaseHandler() {
+        ensureDatabaseFolderExists();
         createTableIfNeeded();
     }
 
@@ -14,6 +18,18 @@ public class DatabaseHandler {
             instance = new DatabaseHandler();
         }
         return instance;
+    }
+
+    private void ensureDatabaseFolderExists() {
+        File folder = new File(DB_FOLDER);
+        if (!folder.exists()) {
+            boolean created = folder.mkdirs();
+            if (created) {
+                System.out.println("📁 Folder database berhasil dibuat: " + DB_FOLDER);
+            } else {
+                System.err.println("❌ Gagal membuat folder database: " + DB_FOLDER);
+            }
+        }
     }
 
     private void createTableIfNeeded() {

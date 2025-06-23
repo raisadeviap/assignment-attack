@@ -26,8 +26,16 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
     Image laptop_rusakImg;
     Image buku_panjangImg;
     Image jamImg;
+    Image judulImg;
 
     Clip backgroundMusic;
+
+    JButton startButton;
+    JButton restartButton;
+    boolean gameStarted = false;
+
+    private boolean showInstruction = false;
+    private Timer instructionTimer;
 
     class Block {
         int x, y, width, height;
@@ -70,6 +78,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         setBackground(Color.white);
         setFocusable(true);
+        setLayout(null);
         addKeyListener(this);
 
         backgroundImg = new ImageIcon(getClass().getResource("/img/background.png")).getImage();
@@ -83,34 +92,71 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         laptop_rusakImg = new ImageIcon(getClass().getResource("/img/laptop_rusak.png")).getImage();
         buku_panjangImg = new ImageIcon(getClass().getResource("/img/buku_panjang.png")).getImage();
         jamImg = new ImageIcon(getClass().getResource("/img/jam.png")).getImage();
+        judulImg = new ImageIcon(getClass().getResource("/img/judul.png")).getImage();
 
         mahasiswa = new Block(mahasiswaX, mahasiswaY, mahasiswaWidth, mahasiswaOriginalHeight, mahasiswaRunImg);
 
         gameLoop = new Timer(1000 / 60, this);
-        gameLoop.start();
-
         placeRintanganTimer = new Timer(1500, e -> placeRintangan());
-        placeRintanganTimer.start();
+
+        startButton = new JButton(new ImageIcon(getClass().getResource("/img/start.png")));
+        startButton.setBounds(boardWidth / 2 - 75, boardHeight / 2 - 30, 150, 60);
+        startButton.setBorderPainted(false);
+        startButton.setContentAreaFilled(false);
+        startButton.setFocusPainted(false);
+        startButton.addActionListener(e -> startGame());
+        add(startButton);
+
+        restartButton = new JButton(new ImageIcon(getClass().getResource("/img/restart.png")));
+        restartButton.setBounds(boardWidth / 2 - 75, boardHeight / 2 + 20, 150, 60);
+        restartButton.setBorderPainted(false);
+        restartButton.setContentAreaFilled(false);
+        restartButton.setFocusPainted(false);
+        restartButton.setVisible(false);
+        restartButton.addActionListener(e -> restartGame());
+        add(restartButton);
 
         playBackgroundMusic("/audio/RobotCity.wav");
+    }
+
+    private void startGame() {
+        gameStarted = true;
+        showInstruction = true;
+        startButton.setVisible(false);
+
+        gameLoop.start();
+        placeRintanganTimer.start();
+
+        instructionTimer = new Timer(1000, e -> {
+            showInstruction = false;
+            instructionTimer.stop();
+        });
+        instructionTimer.setRepeats(false);
+        instructionTimer.start();
+    }
+
+    private void restartGame() {
+        resetGame();
+        restartButton.setVisible(false);
+
+        showInstruction = true;
+        instructionTimer = new Timer(4000, e -> {
+            showInstruction = false;
+            instructionTimer.stop();
+        });
+        instructionTimer.setRepeats(false);
+        instructionTimer.start();
     }
 
     void placeRintangan() {
         if (gameOver) return;
         double chance = Math.random();
-        if (chance > 0.8333) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, laptop1Img));
-        } else if (chance > 0.6666) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, buku_pendekImg));
-        } else if (chance > 0.5) {
-            rintanganArray.add(new Block(750, rintanganAirY, 50, 50, leadsImg));
-        } else if (chance > 0.3333) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, laptop_rusakImg));
-        } else if (chance > 0.1666) {
-            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, buku_panjangImg));
-        } else {
-            rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, jamImg));
-        }
+        if (chance > 0.8333) rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, laptop1Img));
+        else if (chance > 0.6666) rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, buku_pendekImg));
+        else if (chance > 0.5) rintanganArray.add(new Block(750, rintanganAirY, 50, 50, leadsImg));
+        else if (chance > 0.3333) rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, laptop_rusakImg));
+        else if (chance > 0.1666) rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, buku_panjangImg));
+        else rintanganArray.add(new Block(750, rintanganGroundY, 45, 45, jamImg));
 
         if (rintanganArray.size() > 10) rintanganArray.remove(0);
     }
@@ -135,6 +181,25 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         } else {
             g.drawString("Score: " + score, 10, 35);
         }
+
+        if (showInstruction) {
+            g.setColor(new Color(0, 0, 0, 200));
+            g.fillRect(0, boardHeight / 2 - 30, boardWidth, 60);
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("DialogInput", Font.BOLD, 18));
+            String info = "Gunakan ↑ / Spasi untuk lompat, ↓ untuk menunduk. Hindari rintangan!";
+            int textWidth = g.getFontMetrics().stringWidth(info);
+            g.drawString(info, (boardWidth - textWidth) / 2, boardHeight / 2 + 5);
+        }
+
+        if (!gameStarted) {
+            int judulWidth = 400;
+            int judulHeight = 100;
+            int judulX = (boardWidth - judulWidth) / 2;
+            int judulY = boardHeight / 4 - 50;
+            g.drawImage(judulImg, judulX, judulY, judulWidth, judulHeight, null);
+        }
+
     }
 
     public void playBackgroundMusic(String path) {
@@ -164,9 +229,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
             if (collision(mahasiswa, r)) {
                 gameOver = true;
                 mahasiswa.img = mahasiswaDeadImg;
-                if (backgroundMusic != null && backgroundMusic.isRunning()) {
-                    backgroundMusic.stop();
-                }
+                if (backgroundMusic != null && backgroundMusic.isRunning()) backgroundMusic.stop();
             }
         }
         score++;
@@ -178,12 +241,12 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (!gameStarted) return;
         move();
         repaint();
         if (gameOver) {
             placeRintanganTimer.stop();
             gameLoop.stop();
-
             if (!skorSudahDisimpan) {
                 JTextField nameField = new JTextField(15);
                 nameField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -209,6 +272,7 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
                     skorSudahDisimpan = true;
                 }
             }
+            restartButton.setVisible(true);
         }
     }
 
@@ -228,28 +292,11 @@ public class AssignmentAttackGame extends JPanel implements ActionListener, KeyL
         }
 
         if (gameOver && (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP)) {
-            mahasiswa.y = mahasiswaY;
-            mahasiswa.img = mahasiswaRunImg;
-            mahasiswa.height = mahasiswaOriginalHeight;
-            velocityY = 0;
-            rintanganArray.clear();
-            score = 0;
-            gameOver = false;
-            skorSudahDisimpan = false;
-            inputNamaSelesai = false;
-            gameLoop.start();
-            placeRintanganTimer.start();
-
-            if (backgroundMusic != null) {
-                backgroundMusic.setFramePosition(0);
-                backgroundMusic.start();
-                backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
-            }
+            restartGame();
         }
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
+    @Override public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_DOWN && isCrouching) {
             isCrouching = false;
             mahasiswa.img = mahasiswaRunImg;
